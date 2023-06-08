@@ -37,47 +37,26 @@ public class DatabaseSeeder implements CommandLineRunner {
         person1.setAddresses(new ArrayList<>());
         person1.setBsn("123456789");
         person1.setIban("NL12ABCD34567890");
-
-// Create Address
         Address address1 = new Address("Street 1", "City 1", "State 1", "12345", person1);
         person1.addAddress(address1);
-
-// Save Person
-        Person savedPerson1 = personRepository.save(person1);
-
-        // Create Employee
-        Employee employee1 = Employee.builder()
+        Set<Role> roles = new HashSet<>();
+        roles.add(new Role("ADMIN"));
+        roles.add(new Role("USER"));
+        Employee employee = Employee.builder()
                 .department(Department.IT)
-                .person(savedPerson1)
                 .build();
-        employeeRepository.save(employee1);
-
-        // Retrieve Managed Role from the database
-        Role role1 = roleRepository.findByName("ROLE_USER");
-
-        // Create AppUser
+        person1.setEmployee(employee);
+        employee.setPerson(person1);
         AppUser appUser1 = AppUser.builder()
                 .username("username1")
                 .password("password1")
                 .email("email1@example.com")
-                .employee(employee1)
+                .employee(employee) // Link AppUser to Employee
+                .roles(roles) // Set roles
                 .build();
-
-        // Add the retrieved Role to the AppUser's roles collection
-        appUser1.getRoles().add(role1);
-
-        // Save AppUser
-        appUserRepository.save(appUser1);
-
-        System.out.println("Saved records:");
-        List<Person> persons = personRepository.findAll();
-        List<Employee> employees = employeeRepository.findAll();
-        List<AppUser> appUsers = appUserRepository.findAll();
-        List<Role> roles = roleRepository.findAll();
-        System.out.println(persons);
-        System.out.println(employees);
-        System.out.println(appUsers);
-        System.out.println(roles);
+        employee.setAppUser(appUser1);
+        personRepository.save(person1);
     }
+
 
 }

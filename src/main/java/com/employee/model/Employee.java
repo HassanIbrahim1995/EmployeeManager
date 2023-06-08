@@ -24,13 +24,11 @@ public class Employee {
     @Column(nullable = false)
     private Department department;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id", referencedColumnName = "person_id")
-    private Person person;
-
-    @OneToOne
-    @JoinColumn(name = "app_user_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, optional = false)
     private AppUser appUser;
+
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, optional = false)
+    private Person person;
 
     @Override
     public boolean equals(Object o) {

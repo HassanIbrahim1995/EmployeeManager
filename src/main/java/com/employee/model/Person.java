@@ -62,6 +62,10 @@ public class Person {
     @NotBlank(message = "Iban cannot be empty.")
     private String iban;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    private Employee employee;
+
     public Person(String firstName, String middleName, String lastName, Date birthdate, List<Address> addresses, String bsn, String iban) {
         this.firstName = firstName;
         this.middleName = middleName;

@@ -26,7 +26,6 @@ public class EmployeeMapper implements Mapper<Employee, EmployeeDTO> {
 
         return EmployeeDTO.builder()
                 .department(entity.getDepartment())
-                .person(personMapper.mapToDTO(entity.getPerson()))
                 .appUser(appUserMapper.mapToDTO(entity.getAppUser()))
                 .build();
     }
@@ -39,7 +38,6 @@ public class EmployeeMapper implements Mapper<Employee, EmployeeDTO> {
 
         return Employee.builder()
                 .department(dto.getDepartment())
-                .person(personMapper.mapFromDTO(dto.getPerson()))
                 .appUser(appUserMapper.mapFromDTO(dto.getAppUser()))
                 .build();
     }
