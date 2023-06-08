@@ -15,7 +15,6 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 public class Role {
 
     @Id
@@ -28,6 +27,11 @@ public class Role {
     @ManyToMany(mappedBy = "roles")
     @ToString.Exclude
     private Set<AppUser> users = new HashSet<>();
+
+    public Role(String name, Set<AppUser> users) {
+        this.name = name;
+        this.users = users;
+    }
 
     @Override
     public boolean equals(Object o) {
