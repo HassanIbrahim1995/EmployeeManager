@@ -18,7 +18,6 @@ import java.util.Objects;
 @Setter
 @Getter
 @ToString
-@RequiredArgsConstructor
 @Entity
 @Builder
 public class Person {
