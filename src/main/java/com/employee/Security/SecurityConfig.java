@@ -9,7 +9,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -19,18 +19,15 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     AppUserServiceImpl appUserService;
-    private final PasswordEncoder passwordEncoder; // This is the password encoder from SecurityBeansConfig
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http.csrf(csrf -> csrf.disable())
+        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/persons/**").permitAll();
-                    authorize.requestMatchers("/addresses/**").permitAll();
-                    authorize.requestMatchers("/employee/**").permitAll();
-                    authorize.requestMatchers("/roles/**").permitAll();
-                    authorize.requestMatchers("/users/**").permitAll();
+                    authorize.requestMatchers("/register/**").permitAll();
+                    authorize.requestMatchers("/api/auth/login/**").permitAll();
                     authorize.anyRequest().authenticated();
                 });
         return http.build();
