@@ -1,0 +1,12 @@
+package com.employee.exception;
+
+public class PersonException extends RuntimeException {
+
+    public PersonException(String message) {
+        super(message);
+    }
+
+    public PersonException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}
