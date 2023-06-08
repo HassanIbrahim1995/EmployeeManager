@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +49,7 @@ public class Person {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "person")
     @ToString.Exclude
-    private List<Address> addresses;
+    private List<Address> addresses =new ArrayList<>();
 
     @Column
     @Size(min = 9, max = 9)

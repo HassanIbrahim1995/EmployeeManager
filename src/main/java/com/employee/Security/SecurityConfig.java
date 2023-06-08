@@ -3,7 +3,6 @@ package com.employee.Security;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,11 +25,11 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authorize) -> {
-                    authorize.requestMatchers("/api/auth/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.GET, "/persons/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.POST, "/persons/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.PUT, "/persons/**").permitAll();
-                    authorize.requestMatchers(HttpMethod.DELETE, "/persons/**").permitAll();
+                    authorize.requestMatchers("/persons/**").permitAll();
+                    authorize.requestMatchers("/addresses/**").permitAll();
+                    authorize.requestMatchers("/employee/**").permitAll();
+                    authorize.requestMatchers("/roles/**").permitAll();
+                    authorize.requestMatchers("/users/**").permitAll();
                     authorize.anyRequest().authenticated();
                 });
         return http.build();

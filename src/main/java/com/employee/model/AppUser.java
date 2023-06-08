@@ -51,7 +51,9 @@ public class AppUser implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-
+    @OneToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
     public AppUser(String username, String password, String email) {
         this.username = username;
         this.password = password;

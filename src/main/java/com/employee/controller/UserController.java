@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
     private final AppUserServiceImpl appUserService;
     private final AppUserMapper appUserMapper;
@@ -57,7 +57,6 @@ public class UserController {
         }
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<AppUserDTO> updateUser(@PathVariable Long id, @RequestBody AppUserDTO userDTO) {
         AppUser existingUser = appUserService.getById(id)
@@ -65,7 +64,7 @@ public class UserController {
                 new UsernameNotFoundException("User with ID " + id + " not found.")
                 );
         AppUser updatedUser = appUserMapper.mapFromDTO(userDTO);
-        updatedUser.setId(existingUser.getId()); // Ensure the ID remains the same
+        updatedUser.setId(existingUser.getId());
         Optional<AppUser> savedUser = appUserService.update(updatedUser);
         AppUserDTO savedUserDTO = appUserMapper.mapToDTO(savedUser.get());
         return ResponseEntity.ok(savedUserDTO);

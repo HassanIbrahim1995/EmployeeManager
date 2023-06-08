@@ -36,6 +36,14 @@ public class Address {
         return getId() != null && Objects.equals(getId(), address.getId());
     }
 
+    public Address(String street, String city, String state, String zipCode, Person person) {
+        this.street = street;
+        this.city = city;
+        this.state = state;
+        this.zipCode = zipCode;
+        this.person = person;
+    }
+
     @Override
     public int hashCode() {
         return getClass().hashCode();
