@@ -1,6 +1,5 @@
 package com.employee.service;
 
-import com.employee.exception.AppUserException;
 import com.employee.model.AppUser;
 import com.employee.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,51 +24,51 @@ public class AppUserServiceImpl implements UserDetailsService, GenericService<Ap
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public AppUser getById(Long id) {
+    public Optional<AppUser> getById(Long id) {
         log.info("Getting AppUser by id: {}", id);
-        return appUserRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("AppUser with id {} not found", id);
-                    return new UsernameNotFoundException("AppUser with id " + id + " not found.");
-                });
+        return appUserRepository.findById(id);
     }
 
     @Override
-    public AppUser save(AppUser entity) {
+    public Optional<AppUser> save(AppUser entity) {
         log.info("Saving AppUser: {}", entity);
         String encodedPassword = passwordEncoder.encode(entity.getPassword());
         entity.setPassword(encodedPassword);
         try {
-            return appUserRepository.save(entity);
+            AppUser savedUser = appUserRepository.save(entity);
+            return Optional.of(savedUser);
         } catch (DataAccessException ex) {
             log.error("Unable to save AppUser: {}", entity, ex);
-            throw new AppUserException(String.format("Unable to save appUser %s", entity), ex);
+            return Optional.empty();
         }
     }
 
     @Override
     public void delete(AppUser entity) {
         log.info("Deleting AppUser: {}", entity);
-        if (!appUserRepository.existsById(entity.getId())) {
-            log.error("AppUser with id {} not found, unable to delete", entity.getId());
-            throw new AppUserException("AppUser with id " + entity.getId() + " not found, unable to delete.");
+        if (appUserRepository.existsById(entity.getId())) {
+            appUserRepository.delete(entity);
         }
-        appUserRepository.delete(entity);
     }
 
     @Override
-    public AppUser update(AppUser entity) {
+    public Optional<AppUser> update(AppUser entity) {
         log.info("Updating AppUser: {}", entity);
-        if (!appUserRepository.existsById(entity.getId())) {
-            log.error("AppUser with id {} not found, unable to update", entity.getId());
-            throw new AppUserException("AppUser with id " + entity.getId() + " not found, unable to update.");
+        if (appUserRepository.existsById(entity.getId())) {
+            try {
+                AppUser updatedUser = appUserRepository.save(entity);
+                return Optional.of(updatedUser);
+            } catch (DataAccessException ex) {
+                log.error("Unable to update AppUser: {}", entity, ex);
+                return Optional.empty();
+            }
         }
-        try {
-            return appUserRepository.save(entity);
-        } catch (DataAccessException ex) {
-            log.error("Unable to update AppUser: {}", entity, ex);
-            throw new AppUserException(String.format("Unable to update appUser %s", entity), ex);
-        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<AppUser> findAll() {
+        return appUserRepository.findAll();
     }
 
     @Override
@@ -82,4 +82,9 @@ public class AppUserServiceImpl implements UserDetailsService, GenericService<Ap
         AppUser appUser = appUserOptional.get();
         return new User(appUser.getUsername(), appUser.getPassword(), appUser.getAuthorities());
     }
+
+    public List<AppUser> getAll() {
+        return appUserRepository.findAll();
+    }
 }
+

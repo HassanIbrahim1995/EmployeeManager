@@ -2,50 +2,73 @@ package com.employee.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
-
-import java.time.LocalDateTime;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(PersonException.class)
-    public ResponseEntity<Problem> handlePersonServiceException(PersonException ex) {
-        logger.error("Person Service Exception", ex);
-        Problem problem = Problem.builder()
-                .withStatus(Status.INTERNAL_SERVER_ERROR)
-                .withTitle("Person Service Exception")
-                .withDetail(ex.getMessage())
-                .with("timestamp", LocalDateTime.now())
-                .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .body(problem);
+    public ResponseEntity<ProblemDetail> handlePersonException(PersonException ex) {
+        log.error("PersonException occurred: {}", ex.getMessage());
+        HttpStatus httpStatus = ex.getHttpStatus();
+        String title = "Person Service Exception";
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(httpStatus, ex.getMessage());
+        problem.setTitle(title);
+        return ResponseEntity.status(httpStatus).body(problem);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Problem> handleGenericException(Exception ex) {
-        logger.error("Generic Exception", ex);
+    @ExceptionHandler(RoleException.class)
+    public ResponseEntity<ProblemDetail> handleRoleException(RoleException ex) {
+        log.error("RoleException occurred: {}", ex.getMessage());
+        HttpStatus httpStatus = ex.getHttpStatus();
+        String title = "Role Service Exception";
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(httpStatus, ex.getMessage());
+        problem.setTitle(title);
+        return ResponseEntity.status(httpStatus).body(problem);
+    }
 
-        Problem problem = Problem.builder()
-                .withStatus(Status.INTERNAL_SERVER_ERROR)
-                .withTitle("Internal Server Error")
-                .withDetail(ex.getMessage())
-                .with("timestamp", LocalDateTime.now())
-                .build();
+    @ExceptionHandler(AddressException.class)
+    public ResponseEntity<ProblemDetail> handleAddressException(AddressException ex) {
+        log.error("AddressException occurred: {}", ex.getMessage());
+        HttpStatus httpStatus = ex.getHttpStatus();
+        String title = "Address Service Exception";
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(httpStatus, ex.getMessage());
+        problem.setTitle(title);
+        return ResponseEntity.status(httpStatus).body(problem);
+    }
 
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .contentType(MediaType.APPLICATION_PROBLEM_JSON)
-                .body(problem);
+    @ExceptionHandler(EmployeeException.class)
+    public ResponseEntity<ProblemDetail> handleEmployeeException(EmployeeException ex) {
+        log.error("EmployeeException occurred: {}", ex.getMessage());
+        HttpStatus httpStatus = ex.getHttpStatus();
+        String title = "Employee Service Exception";
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(httpStatus, ex.getMessage());
+        problem.setTitle(title);
+        return ResponseEntity.status(httpStatus).body(problem);
+    }
+
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ProblemDetail> handleDataAccessException(DataAccessException ex) {
+        log.error("DataAccessException occurred: {}", ex.getMessage());
+        String title = "Data Access Exception";
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        problem.setTitle(title);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(problem);
+    }
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        log.error("DataAccessException occurred: {}", ex.getMessage());
+        String title = "Data Access Exception";
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage());
+        problem.setTitle(title);
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(problem);
     }
 }
-

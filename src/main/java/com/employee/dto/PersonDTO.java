@@ -1,6 +1,5 @@
 package com.employee.dto;
 
-import com.employee.model.Address;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -34,7 +33,7 @@ public class PersonDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthdate;
 
-    private List<Address> addresses;
+    private List<AddressDTO> addresses;
 
     @Size(min = 9, max = 9)
     @Pattern(regexp = "[0-9]+")
