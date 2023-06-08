@@ -15,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
+@Builder
 public class Role {
 
     @Id
