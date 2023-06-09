@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class PersonController {
     private final Mapper<Person, PersonDTO> personMapper;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PersonDTO> getPersonById(@PathVariable Long id) {
         parseAndValidateId(String.valueOf(id));
         Optional<Person> person = personService.getById(id);
@@ -36,6 +38,7 @@ public class PersonController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PersonDTO> createPerson(@RequestBody @Valid PersonDTO personDTO) {
         Person person = personMapper.mapFromDTO(personDTO);
         if (personService.findByBsn(person.getBsn()).isPresent()) {
@@ -47,6 +50,7 @@ public class PersonController {
     }
 
     @GetMapping("/all")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PersonDTO>> getAllPersons() {
         List<Person> persons = personService.findAll();
         if (persons.isEmpty()) {
@@ -60,6 +64,7 @@ public class PersonController {
 
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PersonDTO> updatePerson(@RequestBody @Valid PersonDTO personDTO) {
         Optional<Person> existingPerson = personService.findByBsn(personDTO.getBsn());
         if (existingPerson.isPresent()) {
@@ -73,7 +78,7 @@ public class PersonController {
         }
         throw new PersonException("Person with name " + personDTO.getFirstName() + " not found.", HttpStatus.NOT_FOUND);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ResponseMessage> deletePerson(@PathVariable Long id) {
         parseAndValidateId(String.valueOf(id));
@@ -84,7 +89,7 @@ public class PersonController {
         }
         throw new PersonException("Person with ID " + id + " not found.", HttpStatus.NOT_FOUND);
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     private void parseAndValidateId(String id) {
         try {
             long parsedId = Long.parseLong(id);

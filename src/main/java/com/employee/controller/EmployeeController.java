@@ -8,6 +8,7 @@ import com.employee.service.GenericService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -21,6 +22,7 @@ public class EmployeeController {
     private final Mapper<Employee, EmployeeDTO> employeeMapper;
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long id) {
         Optional<Employee> employeeOptional = employeeService.getById(id);
         if (employeeOptional.isPresent()) {

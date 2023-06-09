@@ -1,16 +1,16 @@
 package com.employee.Data;
 
 import com.employee.model.*;
-import com.employee.repository.AppUserRepository;
-import com.employee.repository.EmployeeRepository;
 import com.employee.repository.PersonRepository;
-import com.employee.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 @AllArgsConstructor
@@ -30,8 +30,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Address address1 = new Address("Street 1", "City 1", "State 1", "12345", person1);
         person1.addAddress(address1);
         Set<Role> roles = new HashSet<>();
-        roles.add(new Role("ADMIN"));
-        roles.add(new Role("USER"));
+        roles.add(new Role("ROLE_USER"));
         Employee employee = Employee.builder()
                 .department(Department.IT)
                 .build();
@@ -46,6 +45,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 .build();
         employee.setAppUser(appUser1);
         personRepository.save(person1);
+
+
     }
 
 }

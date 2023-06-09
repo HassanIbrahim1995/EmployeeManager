@@ -1,13 +1,15 @@
 package com.employee.Security;
 
+import com.employee.service.AppUserServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -24,6 +26,11 @@ public class JwtTokenProvider {
     @Value("${app-jwt-expiration-milliseconds}")
     private long jwtExpirationDate;
 
+    final AppUserServiceImpl appUserService;
+
+    public JwtTokenProvider(AppUserServiceImpl appUserService) {
+        this.appUserService = appUserService;
+    }
     // generate JWT token
     public String generateToken(Authentication authentication){
         String username = authentication.getName();
@@ -39,6 +46,11 @@ public class JwtTokenProvider {
                 .signWith(key())
                 .compact();
         return token;
+    }
+    public Authentication getAuthentication(String token) {
+        String username = getUsername(token);
+        UserDetails userDetails = appUserService.loadUserByUsername(username);
+        return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     private Key key(){

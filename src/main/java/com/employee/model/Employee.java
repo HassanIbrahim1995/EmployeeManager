@@ -1,11 +1,14 @@
 package com.employee.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import java.util.Objects;
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -25,6 +28,7 @@ public class Employee {
     private Department department;
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, optional = false)
+    @JsonManagedReference
     private AppUser appUser;
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, optional = false)
